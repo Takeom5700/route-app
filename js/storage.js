@@ -1,9 +1,10 @@
-// localStorageのルートセット読み書き
+// よく使うルートのlocalStorage読み書き
 
-const KEY = "routeSets";
+const KEY = "savedRoutes";
+const MAX = 5;
 
-/** ルートセット一覧を取得 */
-export function loadRouteSets() {
+/** 保存済みルート一覧を取得 */
+export function loadSavedRoutes() {
   try {
     return JSON.parse(localStorage.getItem(KEY) || "[]");
   } catch {
@@ -11,30 +12,14 @@ export function loadRouteSets() {
   }
 }
 
-/** ルートセット一覧を保存 */
-export function saveRouteSets(routeSets) {
-  localStorage.setItem(KEY, JSON.stringify(routeSets));
-}
-
-/** 単一ルートセットを追加または更新（idで判定） */
-export function upsertRouteSet(routeSet) {
-  const list = loadRouteSets();
-  const idx = list.findIndex(r => r.id === routeSet.id);
-  if (idx >= 0) {
-    list[idx] = routeSet;
-  } else {
-    list.push(routeSet);
-  }
-  saveRouteSets(list);
-}
-
-/** 指定idのルートセットを削除 */
-export function deleteRouteSet(id) {
-  const list = loadRouteSets().filter(r => r.id !== id);
-  saveRouteSets(list);
-}
-
-/** シンプルなUUID生成 */
-export function generateId() {
-  return crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2);
+/**
+ * ルートを保存（同じfrom+toは上書き、最大5件）
+ * @param {string} from
+ * @param {string} to
+ */
+export function saveRoute(from, to) {
+  const label = `${from}→${to}`;
+  const list = loadSavedRoutes().filter(r => r.label !== label);
+  list.unshift({ label, from, to });
+  localStorage.setItem(KEY, JSON.stringify(list.slice(0, MAX)));
 }

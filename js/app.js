@@ -1,98 +1,91 @@
 // メイン画面のエントリポイント
-import { fetchDelays } from "./api.js";
-import { setLoading, showError, clearError, renderResults, clearResults, setFetchedAt } from "./ui.js";
-import { loadRouteSets } from "./storage.js";
-import { rankCandidates } from "./scoring.js";
+import { fetchRoutes } from "./api.js";
+import { setLoading, showError, hideError, clearResults, renderResults } from "./ui.js";
+import { loadSavedRoutes, saveRoute } from "./storage.js";
 
-// ── DOM参照 ────────────────────────────────────────────
-const noRouteset    = document.getElementById("no-routeset");
-const tabNav        = document.getElementById("tab-nav");
-const tabList       = document.getElementById("tab-list");
-const actionSection = document.getElementById("action-section");
-const refreshBtn    = document.getElementById("refresh-btn");
+// ── DOM参照 ─────────────────────────────────────────────
+const inputFrom     = document.getElementById("input-from");
+const inputTo       = document.getElementById("input-to");
+const savedRoutesEl = document.getElementById("saved-routes");
+const searchBtn     = document.getElementById("search-btn");
+const saveBtn       = document.getElementById("save-btn");
 
-// 選択中のルートセット
-let currentRouteSet = null;
+// 直前の検索結果を保持（保存ボタン用）
+let lastFrom = "";
+let lastTo   = "";
 
-// ── 初期化 ─────────────────────────────────────────────
-init();
+// ── 初期化 ───────────────────────────────────────────────
+renderSavedRoutes();
 
-function init() {
-  const routeSets = loadRouteSets();
+// ── よく使うルート描画 ───────────────────────────────────
+function renderSavedRoutes() {
+  const routes = loadSavedRoutes();
+  savedRoutesEl.innerHTML = "";
 
-  if (routeSets.length === 0) {
-    noRouteset.hidden = false;
+  if (routes.length === 0) return;
+
+  const label = document.createElement("span");
+  label.className = "saved-route-label";
+  label.textContent = "よく使うルート";
+  savedRoutesEl.appendChild(label);
+
+  routes.forEach(r => {
+    const btn = document.createElement("button");
+    btn.className = "saved-route-btn";
+    btn.textContent = r.label;
+    btn.addEventListener("click", () => {
+      inputFrom.value = r.from;
+      inputTo.value   = r.to;
+    });
+    savedRoutesEl.appendChild(btn);
+  });
+}
+
+// ── 検索ボタン ───────────────────────────────────────────
+searchBtn.addEventListener("click", async () => {
+  const from = inputFrom.value.trim();
+  const to   = inputTo.value.trim();
+
+  if (!from || !to) {
+    inputFrom.focus();
     return;
   }
 
-  noRouteset.hidden = true;
-  tabNav.hidden = false;
-  actionSection.hidden = false;
-
-  renderTabs(routeSets);
-
-  // 最初のタブを選択して自動取得
-  selectRouteSet(routeSets[0]);
-}
-
-// ── タブ描画 ───────────────────────────────────────────
-function renderTabs(routeSets) {
-  tabList.innerHTML = "";
-
-  routeSets.forEach(rs => {
-    const btn = document.createElement("button");
-    btn.className = "tab-btn";
-    btn.textContent = rs.label;
-    btn.setAttribute("role", "tab");
-    btn.setAttribute("aria-selected", "false");
-    btn.dataset.id = rs.id;
-
-    btn.addEventListener("click", () => {
-      clearError();
-      clearResults();
-      setFetchedAt("");
-      selectRouteSet(rs);
-    });
-
-    tabList.appendChild(btn);
-  });
-}
-
-function selectRouteSet(rs) {
-  currentRouteSet = rs;
-
-  // タブのaria-selectedを更新
-  tabList.querySelectorAll(".tab-btn").forEach(btn => {
-    btn.setAttribute("aria-selected", btn.dataset.id === rs.id ? "true" : "false");
-  });
-
-  // 自動取得
-  fetchAndRender();
-}
-
-// ── 更新ボタン ─────────────────────────────────────────
-refreshBtn.addEventListener("click", () => {
-  clearError();
-  fetchAndRender();
-});
-
-// ── /delays取得 → スコアリング → 描画 ─────────────────
-async function fetchAndRender() {
-  if (!currentRouteSet) return;
-
-  setLoading(true);
+  hideError();
   clearResults();
+  saveBtn.hidden = true;
+  setLoading(true);
 
   try {
-    const data = await fetchDelays();
-    const delayMap = data.delays ?? {};
-    const ranked = rankCandidates(currentRouteSet.candidates, delayMap);
-    renderResults(ranked);
-    setFetchedAt(data.fetched_at ?? "");
+    const data = await fetchRoutes(from, to);
+    renderResults(data.routes);
+    lastFrom = from;
+    lastTo   = to;
+    saveBtn.hidden = false;
   } catch (err) {
     console.error(err);
-    showError("情報の取得に失敗しました。もう一度ボタンを押してください。");
+    showError();
   } finally {
     setLoading(false);
   }
-}
+});
+
+// ── Enterキーで検索 ──────────────────────────────────────
+[inputFrom, inputTo].forEach(input => {
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter") searchBtn.click();
+  });
+});
+
+// ── ルート保存 ───────────────────────────────────────────
+saveBtn.addEventListener("click", () => {
+  if (!lastFrom || !lastTo) return;
+  saveRoute(lastFrom, lastTo);
+  renderSavedRoutes();
+  saveBtn.textContent = "保存しました";
+  saveBtn.disabled = true;
+  setTimeout(() => {
+    saveBtn.textContent = "このルートを保存";
+    saveBtn.disabled = false;
+  }, 1500);
+});
