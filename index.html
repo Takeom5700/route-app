@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>結局どの経路なん？</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <header>
+    <h1>結局どの経路なん？</h1>
+  </header>
+
+  <main>
+    <!-- ルートセット未登録時の誘導 -->
+    <div id="no-routeset" hidden>
+      <p class="no-routeset-msg">経路がまだ登録されていません。</p>
+      <a href="setup.html" class="btn-setup-large">経路を設定する</a>
+    </div>
+
+    <!-- ルートセット選択タブ -->
+    <nav id="tab-nav" aria-label="ルートセット選択" hidden>
+      <div id="tab-list" class="tab-list" role="tablist"></div>
+    </nav>
+
+    <!-- 更新ボタン・最終確認時刻 -->
+    <section id="action-section" hidden>
+      <button id="refresh-btn" type="button">今の状況を確認する</button>
+      <p id="fetched-at" class="fetched-at"></p>
+    </section>
+
+    <!-- エラー -->
+    <p id="error-message" role="alert" hidden></p>
+
+    <!-- ローディング -->
+    <div id="loading" role="status" aria-live="polite" hidden>
+      <span class="spinner" aria-hidden="true"></span>
+      <span>確認中...</span>
+    </div>
+
+    <!-- 結果エリア -->
+    <section id="results" aria-label="経路候補" hidden></section>
+  </main>
+
+  <footer>
+    <a href="setup.html" class="setup-link">経路を編集する</a>
+  </footer>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
