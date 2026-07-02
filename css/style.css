@@ -283,6 +283,76 @@ body {
   border-top: 1px solid var(--color-border);
 }
 
+/* ── 区間詳細（セグメント） ──────────────────────────── */
+.segments {
+  margin-top: 14px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.seg-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  background: #f9f9f9;
+  border-radius: 6px;
+}
+
+.seg-board, .seg-alight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.seg-time {
+  font-size: 15px;
+  font-weight: bold;
+  color: #444;
+  min-width: 40px;
+}
+
+.seg-station {
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.seg-line {
+  margin: 4px 0 4px 48px;
+  font-size: 15px;
+  color: #555;
+}
+
+.seg-line-name {
+  font-weight: bold;
+}
+
+.seg-direction {
+  color: #777;
+}
+
+.seg-transfer-label {
+  font-size: 13px;
+  color: #fff;
+  background: var(--color-primary);
+  padding: 1px 6px;
+  border-radius: 10px;
+  margin-left: 6px;
+}
+
+.seg-alight .seg-transfer-label[data-last="true"] {
+  background: #555;
+}
+
+.seg-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 2px 0;
+}
+
 /* ── ルート保存ボタン ──────────────────────────────── */
 .save-btn {
   width: 100%;

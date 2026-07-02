@@ -100,12 +100,42 @@ function buildBodyHTML(route) {
     ? `<div class="delay-banner">⚠ ${esc(route.delay_info)}</div>`
     : "";
 
+  const segHTML = buildSegmentsHTML(route.segments ?? []);
+
   return `
-    <p class="route-name">${esc(route.summary)}</p>
     <p class="route-time">${esc(route.departure)}発 → ${esc(route.arrival)}着　${esc(route.duration)}</p>
     <p class="route-meta">乗換${route.transfers}回　${route.fare.toLocaleString()}円</p>
     ${delayHTML}
+    ${segHTML}
   `;
+}
+
+function buildSegmentsHTML(segments) {
+  if (!segments || segments.length === 0) return "";
+
+  const rows = segments.map((seg, i) => {
+    const isLast = i === segments.length - 1;
+    const transferLabel = isLast ? "到着" : "乗換";
+    return `
+      <div class="seg-row">
+        <div class="seg-board">
+          <span class="seg-time">${esc(seg.board_time)}</span>
+          <span class="seg-station">${esc(seg.board_station)}</span>
+        </div>
+        <div class="seg-line">
+          <span class="seg-line-name">${esc(seg.line)}</span>
+          <span class="seg-direction">（${esc(seg.direction)}）</span>
+        </div>
+        <div class="seg-alight">
+          <span class="seg-time">${esc(seg.alight_time)}</span>
+          <span class="seg-station">${esc(seg.alight_station)}</span>
+          <span class="seg-transfer-label">${transferLabel}</span>
+        </div>
+      </div>
+    `;
+  }).join('<div class="seg-divider"></div>');
+
+  return `<div class="segments">${rows}</div>`;
 }
 
 function esc(str) {
