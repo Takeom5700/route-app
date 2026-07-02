@@ -290,80 +290,88 @@ body {
   padding-top: 12px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
-.seg-row {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 10px;
-  background: #f9f9f9;
-  border-radius: 6px;
-}
-
-.seg-board, .seg-alight {
+/* 駅ノード（出発・乗換・到着） */
+.seg-node {
   display: flex;
   align-items: center;
   gap: 8px;
+  padding: 6px 4px;
 }
 
 .seg-time {
   font-size: 15px;
   font-weight: bold;
-  color: #444;
-  min-width: 40px;
+  color: #333;
+  min-width: 42px;
+  flex-shrink: 0;
 }
 
-.seg-station {
+.seg-station-name {
   font-size: 17px;
   font-weight: bold;
+  flex: 1;
 }
 
-.seg-line {
-  margin: 4px 0 4px 48px;
-  font-size: 15px;
+/* バッジ */
+.seg-badge {
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.seg-badge--depart {
+  background: #e8f0fe;
+  color: var(--color-primary);
+}
+
+.seg-badge--arrive {
+  background: #e8f0fe;
+  color: #444;
+}
+
+.seg-badge--transfer {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+/* 路線ブロック（縦棒 + 路線名） */
+.seg-line-block {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  padding: 2px 0;
+}
+
+.seg-line-bar {
+  width: 3px;
+  background: var(--color-primary);
+  border-radius: 2px;
+  margin: 0 19px 0 19px;
+  flex-shrink: 0;
+}
+
+.seg-line-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4px 8px;
+  font-size: 14px;
   color: #555;
 }
 
 .seg-line-name {
   font-weight: bold;
+  color: #333;
 }
 
 .seg-direction {
   color: #777;
-}
-
-.seg-transfer-label {
   font-size: 13px;
-  color: #fff;
-  background: var(--color-primary);
-  padding: 1px 6px;
-  border-radius: 10px;
-  margin-left: 6px;
-}
-
-.seg-alight .seg-transfer-label[data-last="true"] {
-  background: #555;
-}
-
-.seg-divider {
-  height: 1px;
-  background: var(--color-border);
-  margin: 2px 0;
-}
-
-.seg-wait {
-  font-size: 13px;
-  color: var(--color-warn);
-  font-weight: bold;
-  padding: 4px 10px;
-  text-align: center;
-}
-
-.seg-wait--direct {
-  color: #888;
-  font-weight: normal;
 }
 
 /* ── ルート保存ボタン ──────────────────────────────── */

@@ -113,35 +113,55 @@ function buildBodyHTML(route) {
 function buildSegmentsHTML(segments) {
   if (!segments || segments.length === 0) return "";
 
+  // 駅ノード → 路線 → 駅ノード の縦列形式
+  // 出発駅（seg[0].board）→ 路線 → 乗換駅（seg[0].alight） → 路線 → ... → 到着駅（seg[last].alight）
   const parts = [];
+
   segments.forEach((seg, i) => {
     const isLast = i === segments.length - 1;
-    const transferLabel = isLast ? "到着" : "乗換";
-    parts.push(`
-      <div class="seg-row">
-        <div class="seg-board">
+
+    // 出発駅（最初のセグメントのみ）
+    if (i === 0) {
+      parts.push(`
+        <div class="seg-node seg-node--depart">
           <span class="seg-time">${esc(seg.board_time)}</span>
-          <span class="seg-station">${esc(seg.board_station)}</span>
+          <span class="seg-station-name">${esc(seg.board_station)}</span>
+          <span class="seg-badge seg-badge--depart">出発</span>
         </div>
-        <div class="seg-line">
+      `);
+    }
+
+    // 路線（縦棒 + 路線名・行き先）
+    parts.push(`
+      <div class="seg-line-block">
+        <div class="seg-line-bar"></div>
+        <div class="seg-line-info">
           <span class="seg-line-name">${esc(seg.line)}</span>
           <span class="seg-direction">（${esc(seg.direction)}）</span>
-        </div>
-        <div class="seg-alight">
-          <span class="seg-time">${esc(seg.alight_time)}</span>
-          <span class="seg-station">${esc(seg.alight_station)}</span>
-          <span class="seg-transfer-label">${transferLabel}</span>
         </div>
       </div>
     `);
 
-    // 乗換待ち時間（最終区間は不要）
-    if (!isLast) {
-      if (!seg.is_direct && seg.transfer_wait_min > 0) {
-        parts.push(`<div class="seg-wait">⏱ 乗換 約${seg.transfer_wait_min}分待ち</div>`);
-      } else if (!seg.is_direct) {
-        parts.push(`<div class="seg-wait seg-wait--direct">↔ 乗換</div>`);
-      }
+    // 降車駅
+    if (isLast) {
+      parts.push(`
+        <div class="seg-node seg-node--arrive">
+          <span class="seg-time">${esc(seg.alight_time)}</span>
+          <span class="seg-station-name">${esc(seg.alight_station)}</span>
+          <span class="seg-badge seg-badge--arrive">到着</span>
+        </div>
+      `);
+    } else {
+      const waitText = seg.transfer_wait_min > 0
+        ? `乗換　約${seg.transfer_wait_min}分待ち`
+        : `乗換`;
+      parts.push(`
+        <div class="seg-node seg-node--transfer">
+          <span class="seg-time">${esc(seg.alight_time)}</span>
+          <span class="seg-station-name">${esc(seg.alight_station)}</span>
+          <span class="seg-badge seg-badge--transfer">${waitText}</span>
+        </div>
+      `);
     }
   });
 
