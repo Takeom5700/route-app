@@ -353,6 +353,19 @@ body {
   margin: 2px 0;
 }
 
+.seg-wait {
+  font-size: 13px;
+  color: var(--color-warn);
+  font-weight: bold;
+  padding: 4px 10px;
+  text-align: center;
+}
+
+.seg-wait--direct {
+  color: #888;
+  font-weight: normal;
+}
+
 /* ── ルート保存ボタン ──────────────────────────────── */
 .save-btn {
   width: 100%;

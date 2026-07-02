@@ -113,10 +113,11 @@ function buildBodyHTML(route) {
 function buildSegmentsHTML(segments) {
   if (!segments || segments.length === 0) return "";
 
-  const rows = segments.map((seg, i) => {
+  const parts = [];
+  segments.forEach((seg, i) => {
     const isLast = i === segments.length - 1;
     const transferLabel = isLast ? "到着" : "乗換";
-    return `
+    parts.push(`
       <div class="seg-row">
         <div class="seg-board">
           <span class="seg-time">${esc(seg.board_time)}</span>
@@ -132,10 +133,19 @@ function buildSegmentsHTML(segments) {
           <span class="seg-transfer-label">${transferLabel}</span>
         </div>
       </div>
-    `;
-  }).join('<div class="seg-divider"></div>');
+    `);
 
-  return `<div class="segments">${rows}</div>`;
+    // 乗換待ち時間（最終区間は不要）
+    if (!isLast) {
+      if (!seg.is_direct && seg.transfer_wait_min > 0) {
+        parts.push(`<div class="seg-wait">⏱ 乗換 約${seg.transfer_wait_min}分待ち</div>`);
+      } else if (!seg.is_direct) {
+        parts.push(`<div class="seg-wait seg-wait--direct">↔ 乗換</div>`);
+      }
+    }
+  });
+
+  return `<div class="segments">${parts.join("")}</div>`;
 }
 
 function esc(str) {
