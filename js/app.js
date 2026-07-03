@@ -51,10 +51,16 @@ searchBtn.addEventListener("click", async () => {
     return;
   }
 
+  // スマホキーボードを閉じる
+  document.activeElement?.blur();
+
   hideError();
   clearResults();
   saveBtn.hidden = true;
   setLoading(true);
+
+  // スピナーが見える位置までスクロール
+  setTimeout(() => searchBtn.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
 
   try {
     const data = await fetchRoutes(from, to);
@@ -70,10 +76,13 @@ searchBtn.addEventListener("click", async () => {
   }
 });
 
-// ── Enterキーで検索 ──────────────────────────────────────
+// ── Enterキーで検索（スマホ：キーボードを閉じてから実行） ─
 [inputFrom, inputTo].forEach(input => {
   input.addEventListener("keydown", e => {
-    if (e.key === "Enter") searchBtn.click();
+    if (e.key === "Enter") {
+      input.blur(); // キーボードを閉じる
+      searchBtn.click();
+    }
   });
 });
 
