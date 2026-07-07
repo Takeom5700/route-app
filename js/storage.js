@@ -23,3 +23,12 @@ export function saveRoute(from, to) {
   list.unshift({ label, from, to });
   localStorage.setItem(KEY, JSON.stringify(list.slice(0, MAX)));
 }
+
+/**
+ * ルートを削除
+ * @param {string} label - 削除するルートのラベル
+ */
+export function deleteRoute(label) {
+  const list = loadSavedRoutes().filter(r => r.label !== label);
+  localStorage.setItem(KEY, JSON.stringify(list));
+}

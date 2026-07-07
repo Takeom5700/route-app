@@ -1,7 +1,7 @@
 // メイン画面のエントリポイント
 import { fetchRoutes } from "./api.js";
 import { setLoading, showError, hideError, clearResults, renderResults } from "./ui.js";
-import { loadSavedRoutes, saveRoute } from "./storage.js";
+import { loadSavedRoutes, saveRoute, deleteRoute } from "./storage.js";
 
 // ── DOM参照 ─────────────────────────────────────────────
 const inputFrom     = document.getElementById("input-from");
@@ -30,6 +30,9 @@ function renderSavedRoutes() {
   savedRoutesEl.appendChild(label);
 
   routes.forEach(r => {
+    const wrap = document.createElement("div");
+    wrap.className = "saved-route-item";
+
     const btn = document.createElement("button");
     btn.className = "saved-route-btn";
     btn.textContent = r.label;
@@ -37,7 +40,19 @@ function renderSavedRoutes() {
       inputFrom.value = r.from;
       inputTo.value   = r.to;
     });
-    savedRoutesEl.appendChild(btn);
+
+    const del = document.createElement("button");
+    del.className = "saved-route-del";
+    del.textContent = "×";
+    del.setAttribute("aria-label", `${r.label}を削除`);
+    del.addEventListener("click", () => {
+      deleteRoute(r.label);
+      renderSavedRoutes();
+    });
+
+    wrap.appendChild(btn);
+    wrap.appendChild(del);
+    savedRoutesEl.appendChild(wrap);
   });
 }
 

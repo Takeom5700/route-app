@@ -97,13 +97,19 @@ body {
   font-weight: bold;
 }
 
+.saved-route-item {
+  display: flex;
+  align-items: center;
+}
+
 .saved-route-btn {
   min-height: var(--tap-min);
   padding: 10px 16px;
   font-size: var(--font-base);
   background: var(--color-secondary-bg);
   border: 2px solid var(--color-border);
-  border-radius: 24px;
+  border-radius: 24px 0 0 24px;
+  border-right: none;
   cursor: pointer;
   color: var(--color-text);
   white-space: nowrap;
@@ -111,6 +117,25 @@ body {
 
 .saved-route-btn:hover {
   background: #e8e8e8;
+}
+
+.saved-route-del {
+  min-height: var(--tap-min);
+  padding: 10px 12px;
+  font-size: 16px;
+  font-weight: bold;
+  background: var(--color-secondary-bg);
+  border: 2px solid var(--color-border);
+  border-radius: 0 24px 24px 0;
+  cursor: pointer;
+  color: #888;
+  line-height: 1;
+}
+
+.saved-route-del:hover {
+  background: #ffe0e0;
+  color: var(--color-danger);
+  border-color: var(--color-danger);
 }
 
 /* ── 検索ボタン ────────────────────────────────────── */
