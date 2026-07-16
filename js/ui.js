@@ -151,6 +151,15 @@ function buildSegmentsHTML(segments) {
           <span class="seg-badge seg-badge--arrive">到着</span>
         </div>
       `);
+    } else if (seg.is_direct) {
+      // 直通：乗り換え不要（そのまま乗車）
+      parts.push(`
+        <div class="seg-node seg-node--direct">
+          <span class="seg-time">${esc(seg.alight_time)}</span>
+          <span class="seg-station-name">${esc(seg.alight_station)}</span>
+          <span class="seg-badge seg-badge--direct">直通・乗換不要</span>
+        </div>
+      `);
     } else {
       const waitText = seg.transfer_wait_min > 0
         ? `乗換　約${seg.transfer_wait_min}分待ち`

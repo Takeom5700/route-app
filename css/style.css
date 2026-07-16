@@ -364,6 +364,16 @@ body {
   color: #fff;
 }
 
+.seg-badge--direct {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+}
+
+.seg-node--direct .seg-station-name {
+  color: #555;
+}
+
 /* 路線ブロック（縦棒 + 路線名） */
 .seg-line-block {
   display: flex;
