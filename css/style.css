@@ -180,6 +180,10 @@ body {
   padding: 24px 0;
 }
 
+.spinner-wrap[hidden] {
+  display: none;
+}
+
 .spinner-ring {
   width: 36px;
   height: 36px;
