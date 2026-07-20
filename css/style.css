@@ -115,6 +115,28 @@ body {
   padding: 5px 0;
 }
 
+/* ── 検索オプション ────────────────────────────────── */
+.option-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap-min);
+  padding: 4px 2px;
+  margin-bottom: 12px;
+  font-size: var(--font-base);
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.option-checkbox input[type="checkbox"] {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
 /* ── よく使うルート ────────────────────────────────── */
 .saved-routes {
   display: flex;

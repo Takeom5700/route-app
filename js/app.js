@@ -4,11 +4,12 @@ import { setLoading, showError, hideError, clearResults, renderResults } from ".
 import { loadSavedRoutes, saveRoute, deleteRoute } from "./storage.js";
 
 // ── DOM参照 ─────────────────────────────────────────────
-const inputFrom     = document.getElementById("input-from");
-const inputTo       = document.getElementById("input-to");
-const savedRoutesEl = document.getElementById("saved-routes");
-const searchBtn     = document.getElementById("search-btn");
-const saveBtn       = document.getElementById("save-btn");
+const inputFrom          = document.getElementById("input-from");
+const inputTo            = document.getElementById("input-to");
+const savedRoutesEl      = document.getElementById("saved-routes");
+const searchBtn          = document.getElementById("search-btn");
+const saveBtn            = document.getElementById("save-btn");
+const excludeShinkansenEl = document.getElementById("exclude-shinkansen");
 
 // 直前の検索結果を保持（保存ボタン用）
 let lastFrom = "";
@@ -78,7 +79,9 @@ searchBtn.addEventListener("click", async () => {
   setTimeout(() => searchBtn.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
 
   try {
-    const data = await fetchRoutes(from, to);
+    const data = await fetchRoutes(from, to, {
+      excludeShinkansen: excludeShinkansenEl.checked,
+    });
     renderResults(data.routes);
     lastFrom = from;
     lastTo   = to;
